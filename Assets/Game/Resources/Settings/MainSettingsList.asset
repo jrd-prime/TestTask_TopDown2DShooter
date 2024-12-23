@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a3dcce48024c43bc8f0fad366021da, type: 3}
+  m_Name: MainSettingsList
+  m_EditorClassIdentifier: 
+  playerSettings: {fileID: 11400000, guid: c5068abdd9b135e46b232572248464b0, type: 2}
+  enemySettings: {fileID: 11400000, guid: ec1acf6e022e39249b60f0de1f1f4fb7, type: 2}
+  projectileSettings: {fileID: 11400000, guid: 88021c6afdf1d264e9fce9d660f675f9, type: 2}
