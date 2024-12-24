@@ -16,47 +16,49 @@ namespace Game.Scripts.Systems
     {
         private IUserInput _input;
         private readonly CompositeDisposable _disposable = new();
-        private Player _player;
+        private IPlayer _player;
         private Vector2 _direction;
         private PlayerSettings _playerSettings;
         private float _moveSpeed;
-        private Vector2 mousePos;
-        private Rigidbody2D _rb;
+        private Vector2 _mousePosition;
 
         [Inject]
-        private void Construct(IUserInput input, Player player, ISettingsManager settingsManager)
+        private void Construct(IUserInput input, ISettingsManager settingsManager, GameManager gameManager)
         {
             _input = input;
-            _player = player;
             _playerSettings = settingsManager.GetSettings<PlayerSettings>();
+            _player = gameManager.player;
         }
 
         public void Initialize()
         {
             if (_playerSettings == null) throw new Exception("PlayerSettings is null");
             _moveSpeed = _playerSettings.playerSpeed;
-
-            _rb = _player.GetComponent<Rigidbody2D>();
-
             _input.MoveDirection.Subscribe(SetDirection).AddTo(_disposable);
-            _input.MousePosition.Skip(1).Subscribe(CalcRotation).AddTo(_disposable);
+            _input.MousePosition.Skip(1).Subscribe(SetMousePosition).AddTo(_disposable);
         }
 
         public void FixedTick()
         {
-            _rb.AddForce(_direction * _moveSpeed * 3f);
+            Move();
+            Rotate();
+        }
 
-            var faceDir = mousePos - _rb.position;
+        private void Rotate()
+        {
+            var faceDir = _mousePosition - _player.GetPosition();
             var angle = Mathf.Atan2(faceDir.y, faceDir.x) * Mathf.Rad2Deg;
-            _rb.MoveRotation(angle);
+            _player.Rotate(angle);
+        }
+
+        private void Move()
+        {
+            _player.Move(_direction * _moveSpeed * 3f);
         }
 
         private void SetDirection(Vector2 direction) => _direction = direction;
+        private void SetMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
 
-        private void CalcRotation(Vector2 mousePosition)
-        {
-            mousePos = mousePosition;
-        }
 
         public void Dispose() => _disposable?.Dispose();
     }

@@ -21,10 +21,15 @@ namespace Game.Scripts.Settings
             {
                 throw new Exception("Settings are not assigned");
             }
+        }
 
+        public Dictionary<Type, InGameSettings> GetSettingsList()
+        {
             settingsDictionary.Add(typeof(PlayerSettings), playerSettings);
             settingsDictionary.Add(typeof(EnemySettings), enemySettings);
             settingsDictionary.Add(typeof(ProjectileSettings), projectileSettings);
+
+            return settingsDictionary;
         }
     }
 }

@@ -48,4 +48,5 @@ MonoBehaviour:
     TypeName: Game.Scripts.Scope.RootScope
   autoRun: 1
   autoInjectGameObjects: []
-  spawnManager: {fileID: 0}
+  gameManager: {fileID: 3769190506403274927, guid: f9f332d1f1e89384e931403436c1b96c, type: 3}
+  spawnManager: {fileID: 2502870432872032140, guid: 23ed00ff5ef7c3c47b428ebcd580f36a, type: 3}

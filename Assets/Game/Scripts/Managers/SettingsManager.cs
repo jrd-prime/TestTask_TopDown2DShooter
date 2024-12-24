@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace Game.Scripts.Managers
 {
-    public interface ISettingsManager : IInitializable
+    public interface ISettingsManager : IInitializable, IDisposable
     {
         public T GetSettings<T>() where T : InGameSettings;
     }
@@ -20,13 +20,12 @@ namespace Game.Scripts.Managers
         [Inject]
         private void Construct(MainSettings mainSettings)
         {
-            Debug.LogWarning("SettingsManager Construct");
-            _settingsCache = mainSettings.settingsDictionary;
-            Debug.LogWarning(_settingsCache.Count);
+            _settingsCache = mainSettings.GetSettingsList();
         }
 
         public void Initialize()
         {
+            if (_settingsCache.Count == 0) throw new Exception("No settings registered");
         }
 
         public T GetSettings<T>() where T : InGameSettings
@@ -35,6 +34,11 @@ namespace Game.Scripts.Managers
                 throw new ArgumentException($"Settings of {nameof(T)} is not registered in {nameof(SettingsManager)}");
 
             return (T)_settingsCache[typeof(T)];
+        }
+
+        public void Dispose()
+        {
+            _settingsCache.Clear();
         }
     }
 }

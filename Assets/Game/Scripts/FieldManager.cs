@@ -7,6 +7,7 @@ namespace Game.Scripts
     {
         [SerializeField] private SpriteRenderer field;
         [SerializeField] private Camera mainCamera;
+        [SerializeField] private LayerMask layerMask;
 
         private void Awake()
         {
@@ -58,6 +59,8 @@ namespace Game.Scripts
             edgeCollider.points = new[] { topLeft, topRight, bottomLeft };
 
             gameObj.transform.position = Vector3.zero;
+
+            gameObj.layer = LayerMask.NameToLayer("Walls");
         }
     }
 }

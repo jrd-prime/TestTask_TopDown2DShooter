@@ -9,12 +9,14 @@ namespace Game.Scripts.Input
     {
         public ReactiveProperty<Vector2> MoveDirection { get; }
         public ReactiveProperty<Vector2> MousePosition { get; }
+        public Subject<Unit> Shoot { get; }
     }
 
     public sealed class PCUserInput : MonoBehaviour, IUserInput
     {
         public ReactiveProperty<Vector2> MoveDirection { get; } = new();
         public ReactiveProperty<Vector2> MousePosition { get; } = new();
+        public Subject<Unit> Shoot { get; } = new();
 
         private PCInputActions _gameInputActions;
         private Vector2 _movementInput;
@@ -33,12 +35,13 @@ namespace Game.Scripts.Input
             _gameInputActions.Player.Move.canceled += OnMoveCanceled;
 
             _gameInputActions.Player.MousePosition.performed += OnMousePositionPerformed;
+
+            _gameInputActions.Player.Click.performed += OnShootPerformed;
         }
 
         private void OnMousePositionPerformed(InputAction.CallbackContext context)
         {
             MousePosition.Value = _cam.ScreenToWorldPoint(context.ReadValue<Vector2>());
-            // MoveDirection.Value = context.ReadValue<Vector2>();
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)
@@ -51,11 +54,17 @@ namespace Game.Scripts.Input
             if (MoveDirection.CurrentValue != Vector2.zero) MoveDirection.Value = Vector2.zero;
         }
 
+        private void OnShootPerformed(InputAction.CallbackContext context)
+        {
+            Shoot.OnNext(Unit.Default);
+        }
+
         private void OnDestroy()
         {
             _gameInputActions.Player.Move.performed -= OnMovePerformed;
             _gameInputActions.Player.Move.canceled -= OnMoveCanceled;
             _gameInputActions.Player.MousePosition.performed -= OnMousePositionPerformed;
+            _gameInputActions.Player.Click.performed -= OnShootPerformed;
             _gameInputActions.Disable();
         }
     }
