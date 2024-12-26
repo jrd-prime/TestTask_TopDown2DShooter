@@ -31,7 +31,7 @@ namespace Game.Scripts.PhysicsObjs.Character.Enemy
         {
             b.canMove = false;
 
-            await Aim();
+            // await Aim();
 
             Fire();
             b.canMove = true;
