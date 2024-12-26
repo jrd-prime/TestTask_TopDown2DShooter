@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a3dcce48024c43bc8f0fad366021da, type: 3}
   m_Name: MainSettingsList
   m_EditorClassIdentifier: 
+  gameSettings: {fileID: 11400000, guid: 664748fddc0bc504e9d39b587aec0e84, type: 2}
   playerSettings: {fileID: 11400000, guid: c5068abdd9b135e46b232572248464b0, type: 2}
   enemySettings: {fileID: 11400000, guid: ec1acf6e022e39249b60f0de1f1f4fb7, type: 2}
   projectileSettings: {fileID: 11400000, guid: 88021c6afdf1d264e9fce9d660f675f9, type: 2}

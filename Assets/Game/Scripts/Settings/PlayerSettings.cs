@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Scripts.Help;
-using Game.Scripts.PhysicsObjs.Player;
+using Game.Scripts.PhysicsObjs.Character.Player;
+using Game.Scripts.Settings.Main;
 using UnityEngine;
 
 namespace Game.Scripts.Settings

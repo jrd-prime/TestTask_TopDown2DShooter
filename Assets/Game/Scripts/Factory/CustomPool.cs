@@ -13,10 +13,8 @@ namespace Game.Scripts.Factory
         private readonly int _poolSize;
         private readonly Transform _parent;
         private readonly IObjectResolver _container;
-
         private readonly Queue<T> _cache = new();
         private readonly HashSet<T> _activeObjects = new(); // Для проверки активных объектов
-
 
         public CustomPool(T prefab, int poolSize, Transform parent, IObjectResolver container, bool allowGrowth = false)
         {
@@ -54,27 +52,24 @@ namespace Game.Scripts.Factory
 
             if (!_allowGrowth) throw new NullReferenceException("Pool is empty and growth is not allowed!");
 
-            var newObj = Object.Instantiate(_prefab, _parent);
-            newObj.gameObject.SetActive(false);
-            _activeObjects.Add(newObj);
+            CreateObject();
+            var newObj = Get();
             return newObj;
         }
 
         public void Return(T obj)
         {
-            if (obj is null)
-            {
-                // Debug.Log("Can't return null object to pool!");
-                return;
-            }
+            if (obj is null) return;
 
-            if (_activeObjects.Contains(obj))
-            {
-                obj.gameObject.SetActive(false);
-                _activeObjects.Remove(obj);
-                _cache.Enqueue(obj);
-            }
-            // else Debug.Log($"Object was taken not from this pool! {obj}");
+            if (!_activeObjects.Contains(obj)) return;
+            obj.gameObject.SetActive(false);
+            _activeObjects.Remove(obj);
+            _cache.Enqueue(obj);
+        }
+
+        public void ReturnAll()
+        {
+            foreach (var activeObject in new List<T>(_activeObjects)) Return(activeObject);
         }
     }
 }

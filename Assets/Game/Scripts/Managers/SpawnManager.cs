@@ -1,7 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Game.Scripts.Factory;
+using Game.Scripts.PhysicsObjs.Character;
+using Game.Scripts.PhysicsObjs.Character.Enemy;
 using Game.Scripts.PhysicsObjs.Projectile;
 using Game.Scripts.Settings;
+using Game.Scripts.Weapon;
 using UnityEngine;
 using VContainer;
 
@@ -11,16 +14,18 @@ namespace Game.Scripts.Managers
     {
         public void SpawnUnits();
         public void DespawnUnits();
+        public ICharacter player { get; }
+        public IEnemyCharacter enemy { get; }
+        public void ResetUnits();
+        public void DespawnAll();
     }
 
-
-    public interface IProjectileSpawnManager
+    public class SpawnManager : MonoBehaviour, ISpawnManager
     {
-        public void SpawnProjectile();
-    }
+        public ICharacter player { get; private set; }
+        public IEnemyCharacter enemy { get; private set; }
 
-    public class SpawnManager : MonoBehaviour, ISpawnManager, IProjectileSpawnManager
-    {
+
         private ISettingsManager _settingsManager;
 
         private PlayerSettings _playerSettings;
@@ -30,6 +35,9 @@ namespace Game.Scripts.Managers
         private Projectile _projectile;
         private CustomPool<Projectile> _projectilePool;
         private IObjectResolver _resolver;
+        public CustomPool<Projectile> projectilesPool { get; private set; }
+
+        private readonly List<ICharacter> _units = new();
 
         [Inject]
         private void Construct(IObjectResolver resolver)
@@ -39,40 +47,48 @@ namespace Game.Scripts.Managers
             _playerSettings = _settingsManager.GetSettings<PlayerSettings>();
             _enemySettings = _settingsManager.GetSettings<EnemySettings>();
             _projectileSettings = _settingsManager.GetSettings<ProjectileSettings>();
+            var factory = resolver.Resolve<ObjFactory>();
+
+            var holder = new GameObject("ProjectilesHolder");
+
+            projectilesPool =
+                new CustomPool<Projectile>(_projectileSettings.prefab, 30, holder.transform, _resolver, true);
+
+            player = factory.CreateAndInject(_playerSettings.prefab, _playerSettings.playerSpawnPosition);
+            var playerWeapon = new PlayerWeapon(projectilesPool);
+            player.SetWeapon(playerWeapon);
+
+            enemy = factory.CreateAndInject(_enemySettings.prefab, _enemySettings.enemySpawnPosition);
+            var enemyWeapon = new EnemyWeapon(projectilesPool);
+            enemy.SetWeapon(enemyWeapon);
+
+            _units.Add(player);
+            _units.Add(enemy);
+
+            DespawnUnits();
         }
 
-        private void Start()
-        {
-            // _player = ObjFactory.Create(_playerSettings.prefab, _playerSettings._playerSpawnPosition);
-            // _enemy = ObjFactory.Create(_enemySettings.prefab, _enemySettings._enemySpawnPosition);
-
-            // _projectilePool = new CustomPool<Projectile>(_projectileSettings.prefab, 10, transform, _resolver, true);
-        }
 
         public void SpawnUnits()
         {
-            SpawnPlayer();
-            SpawnEnemy();
-        }
-
-        private void SpawnPlayer()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SpawnEnemy()
-        {
-            throw new NotImplementedException();
+            foreach (var unit in _units) unit.Spawn();
         }
 
         public void DespawnUnits()
         {
-            throw new NotImplementedException();
+            foreach (var unit in _units) unit.Despawn();
         }
 
-        public void SpawnProjectile()
+        public void ResetUnits()
         {
-            throw new NotImplementedException();
+            foreach (var unit in _units) unit.ResetPosition();
+        }
+
+        public void DespawnAll()
+        {
+            projectilesPool.ReturnAll();
+
+            foreach (var unit in _units) unit.Despawn();
         }
     }
 }

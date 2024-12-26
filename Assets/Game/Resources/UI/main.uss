@@ -1,0 +1,32 @@
+.points-container {
+    flex-grow: 0;
+    width: 250px;
+    height: 70px;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 32px;
+    flex-direction: row;
+    position: absolute;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.pints-name-label {
+    font-size: 30px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    width: 60%;
+    color: rgb(255, 255, 255);
+}
+
+.points-label {
+    width: 40%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    font-size: 30px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}

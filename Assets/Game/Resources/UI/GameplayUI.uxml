@@ -1,0 +1,13 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/Resources/UI/main.uss?fileID=7433441132597879392&amp;guid=5ab1723bccca56142838ea83410b8525&amp;type=3#main" />
+    <engine:VisualElement name="main-container" picking-mode="Ignore" style="flex-grow: 1;">
+        <engine:VisualElement picking-mode="Ignore" name="player-points" class="points-container" style="left: 32px; background-color: rgba(163, 205, 69, 0.3);">
+            <engine:Label text="Label" name="player-name-label" class="pints-name-label" style="left: 0; position: absolute; top: 0; bottom: 0;" />
+            <engine:Label text="9999" name="player-points-label" class="points-label" style="right: 0;" />
+        </engine:VisualElement>
+        <engine:VisualElement picking-mode="Ignore" name="enemy-points" class="points-container" style="right: 32px; background-color: rgba(254, 103, 86, 0.31);">
+            <engine:Label text="Label" name="enemy-name-label" class="pints-name-label" style="right: 0; top: 0; bottom: 0; position: absolute;" />
+            <engine:Label text="9999" name="enemy-points-label" class="points-label" style="left: 0;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

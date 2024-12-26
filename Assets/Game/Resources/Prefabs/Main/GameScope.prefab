@@ -45,8 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: Game.Scripts.Scope.RootScope
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
   gameManager: {fileID: 3769190506403274927, guid: f9f332d1f1e89384e931403436c1b96c, type: 3}
+  fieldManager: {fileID: 913226925914240070, guid: 8e91aae18e635af429af8dde2ba05b8b, type: 3}
   spawnManager: {fileID: 2502870432872032140, guid: 23ed00ff5ef7c3c47b428ebcd580f36a, type: 3}
+  uiManager: {fileID: 6765051586776476118, guid: 5a808f568bed81641bd350a2ccd2dfd3, type: 3}

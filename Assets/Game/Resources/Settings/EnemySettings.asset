@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: EnemySettings
   m_EditorClassIdentifier: 
   prefab: {fileID: -1356308098436012423, guid: f6b24a1739670f544aae85784f0bb19f, type: 3}
-  _enemySpawnPosition: {fileID: 3934787378316070850, guid: 4c2bc17e08d14144bb5b8c579646e042, type: 3}
+  enemySpawnPosition: {fileID: 3934787378316070850, guid: 4c2bc17e08d14144bb5b8c579646e042, type: 3}

@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.Help;
-using Game.Scripts.PhysicsObjs.Enemy;
+using Game.Scripts.PhysicsObjs.Character.Enemy;
+using Game.Scripts.Settings.Main;
 using UnityEngine;
 using UnityEngine.Serialization;
 

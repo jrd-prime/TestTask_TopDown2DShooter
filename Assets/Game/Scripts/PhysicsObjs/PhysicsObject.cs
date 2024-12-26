@@ -1,14 +1,16 @@
-﻿using R3;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Scripts.PhysicsObjs
 {
     [RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D), typeof(Collider2D))]
     public abstract class PhysicsObject : MonoBehaviour
     {
-        private void Awake()
+        protected Rigidbody2D Rb;
+
+        protected void Awake()
         {
-            GetComponent<Rigidbody2D>().gravityScale = 0;
+            Rb = GetComponent<Rigidbody2D>();
+            Rb.gravityScale = 0;
         }
     }
 }
