@@ -14,7 +14,7 @@ namespace Game.Scripts.Systems.Projectile
 
         public bool CheckOutOfBounds(Vector3 position)
         {
-            if (_mainCamera == null) throw new Exception("Camera is null");
+            if (!_mainCamera) throw new Exception("Camera is null");
             var viewportPos = _mainCamera.WorldToViewportPoint(position);
             return viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1;
         }

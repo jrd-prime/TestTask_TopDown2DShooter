@@ -1,4 +1,5 @@
 using System;
+using Game.Scripts.Help;
 using UnityEngine;
 
 namespace Game.Scripts.Managers
@@ -8,7 +9,7 @@ namespace Game.Scripts.Managers
         [SerializeField] private SpriteRenderer field;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private Camera _mainCamera;
-        
+
         private void Start()
         {
             if (_mainCamera == null) throw new Exception("Camera is null");
@@ -20,42 +21,48 @@ namespace Game.Scripts.Managers
             var worldHeight = 2f * _mainCamera.orthographicSize;
             var worldWidth = worldHeight * _mainCamera.aspect;
 
-            var pixelsToUnits = 1f / _mainCamera.pixelHeight * worldHeight;
-            var paddingInWorldUnits = 16f * pixelsToUnits;
-
-            // worldHeight -= 2f * paddingInWorldUnits;
-            // worldWidth -= 2f * paddingInWorldUnits;
-
-            Debug.LogWarning($"width: {worldWidth}, height: {worldHeight}");
-
             Vector2 spriteSize = field.sprite.bounds.size;
 
             var scaleX = worldWidth / spriteSize.x;
             var scaleY = worldHeight / spriteSize.y;
 
-
             field.transform.localScale = new Vector3(scaleX, scaleY, 1f);
 
-            CreateEdgeCollider(new Vector2(0, worldHeight / 2f), new Vector2(worldWidth / 2f, worldHeight / 2f),
-                new Vector2(-worldWidth / 2f, worldHeight / 2f)); // Верхний край
-            CreateEdgeCollider(new Vector2(0, -worldHeight / 2f), new Vector2(worldWidth / 2f, -worldHeight / 2f),
-                new Vector2(-worldWidth / 2f, -worldHeight / 2f)); // Нижний край
-            CreateEdgeCollider(new Vector2(worldWidth / 2f, 0), new Vector2(worldWidth / 2f, worldHeight / 2f),
-                new Vector2(worldWidth / 2f, -worldHeight / 2f)); // Правый край
-            CreateEdgeCollider(new Vector2(-worldWidth / 2f, 0), new Vector2(-worldWidth / 2f, worldHeight / 2f),
-                new Vector2(-worldWidth / 2f, -worldHeight / 2f)); // Левый край
+            CreateWorldEdges(transform, worldWidth, worldHeight);
         }
 
-        private static void CreateEdgeCollider(Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft)
+        private static void CreateWorldEdges(Transform transform, float worldWidth, float worldHeight)
         {
-            var gameObj = new GameObject("ColliderEdge");
-            var edgeCollider = gameObj.AddComponent<EdgeCollider2D>();
+            var topLeft = new Vector2(-worldWidth / 2f, worldHeight / 2f);
+            var topRight = new Vector2(worldWidth / 2f, worldHeight / 2f);
+            var bottomLeft = new Vector2(-worldWidth / 2f, -worldHeight / 2f);
+            var bottomRight = new Vector2(worldWidth / 2f, -worldHeight / 2f);
+            var middleTop = new Vector2(0, worldHeight / 2f);
+            var middleBottom = new Vector2(0, -worldHeight / 2f);
+            var middleRight = new Vector2(worldWidth / 2f, 0);
+            var middleLeft = new Vector2(-worldWidth / 2f, 0);
 
-            edgeCollider.points = new[] { topLeft, topRight, bottomLeft };
+            CreateEdgeCollider(transform, topLeft, topRight, middleTop, "Top");
+            CreateEdgeCollider(transform, bottomLeft, bottomRight, middleBottom, "Bottom");
+            CreateEdgeCollider(transform, topRight, bottomRight, middleRight, "Right");
+            CreateEdgeCollider(transform, topLeft, bottomLeft, middleLeft, "Left");
+        }
 
-            gameObj.transform.position = Vector3.zero;
+        private static void CreateEdgeCollider(Transform parent, Vector2 tLeft, Vector2 tRight, Vector2 bLeft,
+            string edgeName)
+        {
+            var gameObj = new GameObject
+            {
+                name = edgeName,
+                layer = LayerMask.NameToLayer(LayerMaskConstants.WallsLayerName),
+                transform =
+                {
+                    position = Vector3.zero,
+                    parent = parent
+                }
+            };
 
-            gameObj.layer = LayerMask.NameToLayer("Walls");
+            gameObj.AddComponent<EdgeCollider2D>().points = new[] { tLeft, tRight, bLeft };
         }
     }
 }

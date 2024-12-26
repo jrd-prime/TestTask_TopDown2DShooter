@@ -20,7 +20,7 @@ namespace Game.Scripts.PhysicsObjs.Character
         public void Fire()
         {
             if (_weapon == null) throw new Exception("Weapon is not assigned. Use SetWeapon method");
-            _weapon.Fire(transform.right, muzzlePoint);
+            _weapon.Fire(transform.right, muzzlePoint, gameObject.layer);
         }
 
         public void AddForce(Vector2 force)

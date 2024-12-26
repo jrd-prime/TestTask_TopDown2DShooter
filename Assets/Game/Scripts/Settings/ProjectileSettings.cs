@@ -10,5 +10,6 @@ namespace Game.Scripts.Settings
     public class ProjectileSettings : InGameSettings
     {
         public Projectile prefab;
+        [Range(1, 100)] public float force = 50f;
     }
 }

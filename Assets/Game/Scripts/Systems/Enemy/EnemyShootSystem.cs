@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Game.Scripts.Help;
 using Game.Scripts.Managers;
 using Game.Scripts.PhysicsObjs.Character.Enemy;
@@ -15,11 +14,13 @@ namespace Game.Scripts.Systems.Enemy
         private IEnemyCharacter _enemy;
         private ISpawnManager _gameManager;
         private EnemyFollowSystem _enemyFollowSystem;
+
         private Vector2 _targetPosition;
         private bool _isFiringInProgress;
-        private readonly CompositeDisposable _disposables = new();
         private Action _isFiringEndCallback;
-        private Vector2 _projectileColliderSize = new(0.1f, 0.1f);
+        private readonly Vector2 _projectileColliderSize = new(0.1f, 0.1f);
+
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         private void Construct(ISpawnManager spawnManager, EnemyFollowSystem enemyFollowSystem)
@@ -30,20 +31,23 @@ namespace Game.Scripts.Systems.Enemy
 
         public void Initialize()
         {
-            _enemyFollowSystem.TargetPosition.Subscribe(x => _targetPosition = x).AddTo(_disposables);
+            _enemyFollowSystem.TargetPosition.Subscribe(SetTargetPosition).AddTo(_disposables);
             _isFiringEndCallback += OnFireEnd;
         }
-
-        private void OnFireEnd() => _isFiringInProgress = false;
 
         public void FixedTick()
         {
             if (_enemy == null || _isFiringInProgress) return;
-
-            if (!IsTargetInSight()) return;
-            Debug.Log("<color=green>Target In Sight!</color>");
-            _enemy.StopAndFire(_isFiringEndCallback);
-            _isFiringInProgress = true;
+            if (!IsTargetInSight())
+            {
+                //TODO Target is not in sight. Mb ricochet?
+            }
+            else
+            {
+                Debug.Log("<color=green>Target In Sight!</color>");
+                _enemy.StopAndFire(_isFiringEndCallback);
+                _isFiringInProgress = true;
+            }
         }
 
         private bool IsTargetInSight()
@@ -63,5 +67,7 @@ namespace Game.Scripts.Systems.Enemy
         }
 
         public void PostStart() => _enemy = _gameManager.enemy;
+        private void SetTargetPosition(Vector2 targetPosition) => _targetPosition = targetPosition;
+        private void OnFireEnd() => _isFiringInProgress = false;
     }
 }
