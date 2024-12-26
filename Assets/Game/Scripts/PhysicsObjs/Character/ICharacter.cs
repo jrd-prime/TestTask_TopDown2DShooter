@@ -13,6 +13,6 @@ namespace Game.Scripts.PhysicsObjs.Character
         public void SetWeapon(IWeapon weapon);
         public void Despawn();
         public void Spawn();
-        public void ResetPosition();
+        public void ResetCharacter();
     }
 }

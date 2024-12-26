@@ -24,8 +24,7 @@ namespace Game.Scripts.Managers
     {
         public ICharacter player { get; private set; }
         public IEnemyCharacter enemy { get; private set; }
-
-
+        
         private ISettingsManager _settingsManager;
 
         private PlayerSettings _playerSettings;
@@ -81,7 +80,7 @@ namespace Game.Scripts.Managers
 
         public void ResetUnits()
         {
-            foreach (var unit in _units) unit.ResetPosition();
+            foreach (var unit in _units) unit.ResetCharacter();
         }
 
         public void DespawnAll()

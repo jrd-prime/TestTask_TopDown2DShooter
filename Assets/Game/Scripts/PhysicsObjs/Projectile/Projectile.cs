@@ -59,7 +59,7 @@ namespace Game.Scripts.PhysicsObjs.Projectile
             var damageable = go.GetComponent<IDamageable>() ?? throw new Exception("Damageable component is null");
             damageable.TakeDamage();
 
-            var character = go.GetComponent<CharacterBase>() ?? throw new Exception("CharacterBase component is null");
+            var character = go.GetComponent<ICharacter>() ?? throw new Exception("CharacterBase component is null");
             _hitHandlerSystem.HitTarget(character);
         }
 

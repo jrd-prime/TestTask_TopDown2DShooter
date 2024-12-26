@@ -40,12 +40,7 @@ namespace Game.Scripts.PhysicsObjs.Character.Enemy
 
         public Vector2 GetMuzzlePosition() => muzzlePoint.position;
 
-        private async Task Aim()
-        {
-            Debug.LogWarning("pre aim");
-            await Task.Delay(500);
-            Debug.LogWarning("post aim");
-        }
+        private static async Task Aim() => await Task.Delay(500);
     }
 
     public interface IEnemyCharacter : ICharacter

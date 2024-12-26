@@ -14,13 +14,14 @@ namespace Game.Scripts.Systems.Projectile
 
     public sealed class HitHandlerSystem
     {
+        public Subject<Unit> someTargetKilled { get; } = new();
+
         private IPointsManager _pointsManager;
-        public Subject<Unit> SomeTargetKilled { get; } = new();
 
         [Inject]
         private void Construct(IPointsManager pointsManager) => _pointsManager = pointsManager;
 
-        public void HitTarget(CharacterBase go)
+        public void HitTarget(ICharacter go)
         {
             var to = go switch
             {
@@ -32,7 +33,7 @@ namespace Game.Scripts.Systems.Projectile
             if (to == CharacterType.NotSet) return;
 
             _pointsManager.AddPoints(to);
-            SomeTargetKilled.OnNext(Unit.Default);
+            someTargetKilled.OnNext(Unit.Default);
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Game.Scripts.PhysicsObjs.Character
         protected void Start()
         {
             _initialPosition = Rb.position;
-            Debug.LogWarning("initial position: " + _initialPosition);
         }
 
         public void Fire()
@@ -41,6 +40,11 @@ namespace Game.Scripts.PhysicsObjs.Character
 
         public void Despawn() => gameObject.SetActive(false);
         public void Spawn() => gameObject.SetActive(true);
-        public void ResetPosition() => Rb.position = _initialPosition;
+
+        public void ResetCharacter()
+        {
+            Debug.LogWarning("Reset character");
+            Rb.position = _initialPosition;
+        }
     }
 }

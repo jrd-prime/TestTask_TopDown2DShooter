@@ -25,24 +25,18 @@ namespace Game.Scripts.Systems.Enemy
         {
         }
 
-        public void FixedTick()
-        {
-            var targetTransform = _player.GetTransform();
-            Vector2 targetPosition = targetTransform.position;
-            if (TargetPosition.CurrentValue != targetPosition)
-            {
-                TargetPosition.Value = targetPosition;
-            }
-        }
-
         public void PostStart()
         {
             _enemy = _gameManager.enemy;
             _player = _gameManager.player;
-            Debug.LogWarning("_enemy: " + _enemy + " / _player: " + _player);
             var targetTransform = _player.GetTransform();
-            Debug.LogWarning("targetTransform: " + targetTransform);
             _enemy.SetTarget(targetTransform);
+        }
+
+        public void FixedTick()
+        {
+            Vector2 targetPosition = _player.GetTransform().position;
+            if (TargetPosition.CurrentValue != targetPosition) TargetPosition.Value = targetPosition;
         }
     }
 }

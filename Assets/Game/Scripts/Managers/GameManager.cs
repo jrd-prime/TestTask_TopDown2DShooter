@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Game.Scripts.Factory;
 using Game.Scripts.Input;
 using Game.Scripts.PhysicsObjs.Character;
@@ -14,12 +15,14 @@ namespace Game.Scripts.Managers
     {
         public ICharacter player { get; }
         public IEnemyCharacter enemy { get; }
+        public bool IsRoundOver { get; }
     }
 
     public sealed class GameManager : MonoBehaviour, IGameManager
     {
         public ICharacter player { get; private set; }
         public IEnemyCharacter enemy { get; private set; }
+        public bool IsRoundOver { get; private set; }
 
         private ISpawnManager _spawnManager;
         private ISettingsManager _settingsManager;
@@ -50,14 +53,26 @@ namespace Game.Scripts.Managers
 
             _input.Shoot.Subscribe(_ => player.Fire()).AddTo(_disposable);
 
-            _hit.SomeTargetKilled.Subscribe(RestartGame).AddTo(_disposable);
+            _hit.someTargetKilled.Subscribe(RoundOver).AddTo(_disposable);
 
             StartGame();
         }
 
-        private void RestartGame(Unit _)
+        private async void RoundOver(Unit _)
         {
+            Debug.LogWarning("RoundOver");
+
+            IsRoundOver = true;
             _spawnManager.DespawnAll();
+
+            await Task.Delay(2000);
+
+            RestartGame();
+        }
+
+        private void RestartGame()
+        {
+            Debug.LogWarning("RestartGame");
             _spawnManager.SpawnUnits();
             _spawnManager.ResetUnits();
         }
