@@ -1,5 +1,4 @@
-﻿using Game.Scripts.Factory;
-using Game.Scripts.Input;
+﻿using Game.Scripts.Input;
 using Game.Scripts.Managers;
 using Game.Scripts.Settings.Main;
 using UnityEngine;
@@ -11,7 +10,7 @@ namespace Game.Scripts.Scope
     public class RootScope : LifetimeScope
     {
         [SerializeField] private MainSettings mainSettings;
-        [SerializeField] private CameraManager mainCamera;
+        [SerializeField] private CameraManager cameraManager;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -23,12 +22,10 @@ namespace Game.Scripts.Scope
 
             builder.Register<ISettingsManager, SettingsManager>(Lifetime.Singleton).As<IInitializable>();
 
-            builder.RegisterComponent(mainCamera).As<ICameraManager>();
+            builder.RegisterComponent(cameraManager).As<ICameraManager>();
 
             var input = gameObject.AddComponent(typeof(PCUserInput));
             builder.RegisterComponent(input).As<IUserInput>();
-
-            builder.Register<ObjFactory>(Lifetime.Singleton);
         }
     }
 }

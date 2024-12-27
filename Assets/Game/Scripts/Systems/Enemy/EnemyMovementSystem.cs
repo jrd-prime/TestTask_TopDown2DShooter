@@ -1,7 +1,6 @@
 ﻿using System;
 using Game.Scripts.Help;
 using Game.Scripts.Managers;
-using Game.Scripts.PhysicsObjs.Character;
 using Game.Scripts.PhysicsObjs.Character.Enemy;
 using R3;
 using UnityEngine;

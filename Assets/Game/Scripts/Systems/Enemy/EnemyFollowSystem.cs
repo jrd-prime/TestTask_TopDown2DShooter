@@ -13,10 +13,10 @@ namespace Game.Scripts.Systems.Enemy
         public ReactiveProperty<Vector2> TargetPosition { get; } = new(Vector2.zero);
         private IEnemyCharacter _enemy;
         private ICharacter _player;
-        private IGameManager _gameManager;
+        private ISpawnManager _gameManager;
 
         [Inject]
-        private void Construct(IGameManager spawnManager)
+        private void Construct(ISpawnManager spawnManager)
         {
             _gameManager = spawnManager;
         }

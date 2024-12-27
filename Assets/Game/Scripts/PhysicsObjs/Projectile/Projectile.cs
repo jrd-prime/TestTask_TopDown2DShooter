@@ -12,7 +12,6 @@ namespace Game.Scripts.PhysicsObjs.Projectile
     {
         private ISettingsManager _settingsManager;
         private OutOfBoundsCheckSystem _outOfBoundsCheckSystem;
-        private HitHandlerSystem _hitHandlerSystem;
 
         private Action<Projectile> _poolCallback;
         private Rigidbody2D _rb;
@@ -25,7 +24,6 @@ namespace Game.Scripts.PhysicsObjs.Projectile
         {
             _settingsManager = resolver.Resolve<ISettingsManager>();
             _outOfBoundsCheckSystem = resolver.Resolve<OutOfBoundsCheckSystem>();
-            _hitHandlerSystem = resolver.Resolve<HitHandlerSystem>();
         }
 
         private void OnEnable()
@@ -60,7 +58,7 @@ namespace Game.Scripts.PhysicsObjs.Projectile
             damageable.TakeDamage();
 
             var character = go.GetComponent<ICharacter>() ?? throw new Exception("CharacterBase component is null");
-            _hitHandlerSystem.HitTarget(character);
+            character.OnDeath();
         }
 
         private void OnObstacleHit(Collision2D other)

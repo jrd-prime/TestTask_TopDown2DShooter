@@ -1,8 +1,6 @@
 ﻿using System;
-using Game.Scripts.Settings;
+using Game.Scripts.PhysicsObjs.Character;
 using Game.Scripts.Settings.Main;
-using Game.Scripts.Systems;
-using Game.Scripts.Systems.Projectile;
 using JetBrains.Annotations;
 using R3;
 using VContainer;
@@ -13,8 +11,9 @@ namespace Game.Scripts.Managers
     {
         public ReactiveProperty<int> playerPoints { get; }
         public ReactiveProperty<int> enemyPoints { get; }
-        public void AddPoints(CharacterType to);
+        public void AddPoints(CharType to);
         public void ResetPoints();
+        public void AddPointsOnTargetDeath(ICharacter character);
     }
 
     [UsedImplicitly]
@@ -22,28 +21,27 @@ namespace Game.Scripts.Managers
     {
         public ReactiveProperty<int> playerPoints { get; } = new(0);
         public ReactiveProperty<int> enemyPoints { get; } = new(0);
-        private ISettingsManager _settingsManager;
+
         private GameSettings _gameSettings;
 
         [Inject]
         private void Construct(ISettingsManager settingsManager)
         {
-            _settingsManager = settingsManager;
             _gameSettings = settingsManager.GetSettings<GameSettings>();
         }
 
-        public void AddPoints(CharacterType to)
+        public void AddPoints(CharType to)
         {
             var pointsPerKill = _gameSettings.pointsPerKill;
             switch (to)
             {
-                case CharacterType.NotSet:
+                case CharType.NotSet:
                     break;
-                case CharacterType.Player:
-                    enemyPoints.Value += pointsPerKill;
-                    break;
-                case CharacterType.Enemy:
+                case CharType.Player:
                     playerPoints.Value += pointsPerKill;
+                    break;
+                case CharType.Enemy:
+                    enemyPoints.Value += pointsPerKill;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(to), to, null);
@@ -54,6 +52,11 @@ namespace Game.Scripts.Managers
         {
             playerPoints.Value = 0;
             enemyPoints.Value = 0;
+        }
+
+        public void AddPointsOnTargetDeath(ICharacter character)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

@@ -1,7 +1,6 @@
 ﻿using System;
 using Game.Scripts.Help;
 using R3;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Game.Scripts.UI

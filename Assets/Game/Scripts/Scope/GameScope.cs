@@ -1,6 +1,6 @@
 ﻿using System;
+using Game.Scripts.Factory;
 using Game.Scripts.Managers;
-using Game.Scripts.Systems;
 using Game.Scripts.Systems.Enemy;
 using Game.Scripts.Systems.Player;
 using Game.Scripts.Systems.Projectile;
@@ -21,12 +21,15 @@ namespace Game.Scripts.Scope
         {
             Debug.LogWarning("Configure GameScope");
 
+            builder.Register<ObjFactory>(Lifetime.Singleton);
+
             if (gameManager == null)
                 throw new MissingReferenceException($"You must add {nameof(gameManager)} to {nameof(GameScope)}");
             if (spawnManager == null)
                 throw new MissingReferenceException($"You must add {nameof(spawnManager)} to {nameof(GameScope)}");
             if (uiManager == null)
                 throw new MissingReferenceException($"You must add {nameof(uiManager)} to {nameof(GameScope)}");
+
 
             builder.RegisterComponent(gameManager).As<IGameManager>();
             builder.RegisterComponent(spawnManager).As<ISpawnManager>();
@@ -38,15 +41,12 @@ namespace Game.Scripts.Scope
             builder.Register<IPointsManager, PointsManager>(Lifetime.Singleton).As<IDisposable>();
             builder.Register<IPointsUIModel, PointsUIModel>(Lifetime.Singleton).As<IInitializable, IDisposable>();
 
-
             builder.Register<OutOfBoundsCheckSystem>(Lifetime.Singleton).AsSelf();
-            builder.Register<HitHandlerSystem>(Lifetime.Singleton).AsSelf();
 
             builder.Register<EnemyMovementSystem>(Lifetime.Singleton).AsSelf().As<IInitializable>();
             builder.Register<EnemyFollowSystem>(Lifetime.Singleton).AsSelf()
                 .As<IInitializable, IFixedTickable, IPostStartable>();
-            builder.Register<EnemyShootSystem>(Lifetime.Singleton).AsSelf()
-                .As<IInitializable, IFixedTickable, IPostStartable>();
+            builder.Register<EnemyFiringDecisionSystem>(Lifetime.Singleton).AsSelf();
         }
     }
 }

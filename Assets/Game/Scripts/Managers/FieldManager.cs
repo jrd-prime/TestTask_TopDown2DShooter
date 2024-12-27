@@ -8,18 +8,18 @@ namespace Game.Scripts.Managers
     {
         [SerializeField] private SpriteRenderer field;
         [SerializeField] private LayerMask layerMask;
-        [SerializeField] private Camera _mainCamera;
+        [SerializeField] private Camera mainCamera;
 
         private void Start()
         {
-            if (_mainCamera == null) throw new Exception("Camera is null");
-            ScaleSpriteToScreen();
+            if (mainCamera == null) throw new Exception("Camera is null");
+            ScaleFieldToScreen();
         }
 
-        private void ScaleSpriteToScreen()
+        private void ScaleFieldToScreen()
         {
-            var worldHeight = 2f * _mainCamera.orthographicSize;
-            var worldWidth = worldHeight * _mainCamera.aspect;
+            var worldHeight = 2f * mainCamera.orthographicSize;
+            var worldWidth = worldHeight * mainCamera.aspect;
 
             Vector2 spriteSize = field.sprite.bounds.size;
 

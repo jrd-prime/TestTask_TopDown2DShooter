@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Scripts.Factory;
 using Game.Scripts.PhysicsObjs.Character;
 using Game.Scripts.PhysicsObjs.Character.Enemy;
@@ -12,31 +13,28 @@ namespace Game.Scripts.Managers
 {
     public interface ISpawnManager
     {
-        public void SpawnUnits();
-        public void DespawnUnits();
         public ICharacter player { get; }
         public IEnemyCharacter enemy { get; }
-        public void ResetUnits();
         public void DespawnAll();
+        public void Init(Action<ICharacter> gameManagerCallback);
     }
 
     public class SpawnManager : MonoBehaviour, ISpawnManager
     {
         public ICharacter player { get; private set; }
         public IEnemyCharacter enemy { get; private set; }
-        
-        private ISettingsManager _settingsManager;
 
+        private IObjectResolver _resolver;
+        private ISettingsManager _settingsManager;
         private PlayerSettings _playerSettings;
         private EnemySettings _enemySettings;
         private ProjectileSettings _projectileSettings;
 
+        private CustomPool<Projectile> _projectilesPool;
         private Projectile _projectile;
-        private CustomPool<Projectile> _projectilePool;
-        private IObjectResolver _resolver;
-        public CustomPool<Projectile> projectilesPool { get; private set; }
-
         private readonly List<ICharacter> _units = new();
+        private Action<ICharacter> _onDeathCallback;
+        private ObjFactory _factory;
 
         [Inject]
         private void Construct(IObjectResolver resolver)
@@ -46,48 +44,38 @@ namespace Game.Scripts.Managers
             _playerSettings = _settingsManager.GetSettings<PlayerSettings>();
             _enemySettings = _settingsManager.GetSettings<EnemySettings>();
             _projectileSettings = _settingsManager.GetSettings<ProjectileSettings>();
-            var factory = resolver.Resolve<ObjFactory>();
+            _factory = resolver.Resolve<ObjFactory>();
 
             var holder = new GameObject("ProjectilesHolder");
 
-            projectilesPool =
+            _projectilesPool =
                 new CustomPool<Projectile>(_projectileSettings.prefab, 30, holder.transform, _resolver, true);
-
-            player = factory.CreateAndInject(_playerSettings.prefab, _playerSettings.playerSpawnPosition);
-            var playerWeapon = new PlayerWeapon(projectilesPool);
-            player.SetWeapon(playerWeapon);
-
-            enemy = factory.CreateAndInject(_enemySettings.prefab, _enemySettings.enemySpawnPosition);
-            var enemyWeapon = new EnemyWeapon(projectilesPool);
-            enemy.SetWeapon(enemyWeapon);
+            player = _factory.CreateAndInject(_playerSettings.prefab, _playerSettings.playerSpawnPosition);
+            enemy = _factory.CreateAndInject(_enemySettings.prefab, _enemySettings.enemySpawnPosition);
 
             _units.Add(player);
             _units.Add(enemy);
-
-            DespawnUnits();
         }
 
-
-        public void SpawnUnits()
+        public void Init(Action<ICharacter> gameManagerCallback)
         {
-            foreach (var unit in _units) unit.Spawn();
-        }
+            _onDeathCallback = gameManagerCallback;
 
-        public void DespawnUnits()
-        {
-            foreach (var unit in _units) unit.Despawn();
-        }
+            var playerWeapon = new PlayerWeapon(_projectilesPool);
+            player.Initialize(_playerSettings.playerSpawnPosition, playerWeapon, _onDeathCallback);
 
-        public void ResetUnits()
-        {
-            foreach (var unit in _units) unit.ResetCharacter();
+            var enemyWeapon = new EnemyWeapon(_projectilesPool);
+            enemy.Initialize(_enemySettings.enemySpawnPosition, enemyWeapon, _onDeathCallback);
         }
 
         public void DespawnAll()
         {
-            projectilesPool.ReturnAll();
-
-            foreach (var unit in _units) unit.Despawn();
+            _projectilesPool.ReturnAll();
+            foreach (var unit in _units)
+            {
+                unit.Deactivate();
+                unit.IsAlive = false;
+            }
         }
     }
 }

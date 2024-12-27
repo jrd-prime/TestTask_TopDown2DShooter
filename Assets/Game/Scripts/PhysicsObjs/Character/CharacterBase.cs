@@ -7,30 +7,40 @@ namespace Game.Scripts.PhysicsObjs.Character
     public abstract class CharacterBase : PhysicsObject, ICharacter
     {
         [SerializeField] protected Transform muzzlePoint;
+        public bool IsAlive { get; set; }
+        public bool IsGameRunning { get; set; }
 
         private Vector2 _initialPosition;
         private IWeapon _weapon;
 
-        protected void Start()
+        private Action<ICharacter> _onDeathCallback;
+
+        public void Initialize(Transform spawnTransform, IWeapon weapon, Action<ICharacter> gameManagerCallback)
         {
-            _initialPosition = Rb.position;
+            SetWeapon(weapon);
+            _onDeathCallback = gameManagerCallback;
+            _initialPosition = spawnTransform.position;
+            IsAlive = true;
         }
 
         public void Fire()
         {
+            if (!IsGameRunning) return;
+
             if (_weapon == null) throw new Exception("Weapon is not assigned. Use SetWeapon method");
             _weapon.Fire(transform.right, muzzlePoint, gameObject.layer);
         }
 
+        public Vector2 GetMuzzlePosition() => muzzlePoint.position;
+
         public void AddForce(Vector2 force)
         {
-            if (!gameObject.activeSelf) return;
+            if (!IsGameRunning) return;
             Rb.AddForce(force);
         }
 
         public void Rotate(float angle)
         {
-            if (!gameObject.activeSelf) return;
             Rb.MoveRotation(angle);
         }
 
@@ -38,13 +48,27 @@ namespace Game.Scripts.PhysicsObjs.Character
 
         public void SetWeapon(IWeapon weapon) => _weapon = weapon;
 
-        public void Despawn() => gameObject.SetActive(false);
-        public void Spawn() => gameObject.SetActive(true);
+        public virtual void Deactivate() => gameObject.SetActive(false);
+
+        public virtual void Activate()
+        {
+            gameObject.SetActive(true);
+
+            Debug.LogWarning(Rb.transform.position);
+            Debug.LogWarning(Rb.position);
+            ResetCharacter();
+        }
 
         public void ResetCharacter()
         {
-            Debug.LogWarning("Reset character");
             Rb.position = _initialPosition;
+            IsAlive = true;
+        }
+
+        public void OnDeath()
+        {
+            _onDeathCallback.Invoke(this);
+            IsAlive = false;
         }
     }
 }

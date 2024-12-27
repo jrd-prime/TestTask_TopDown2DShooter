@@ -1,4 +1,5 @@
-﻿using Game.Scripts.PhysicsObjs.Projectile;
+﻿using System;
+using Game.Scripts.PhysicsObjs.Projectile;
 using Game.Scripts.Weapon;
 using UnityEngine;
 
@@ -11,8 +12,13 @@ namespace Game.Scripts.PhysicsObjs.Character
         public void Rotate(float angle);
         public Transform GetTransform();
         public void SetWeapon(IWeapon weapon);
-        public void Despawn();
-        public void Spawn();
+        public void Deactivate();
+        public void Activate();
         public void ResetCharacter();
+        public void OnDeath();
+        public void Initialize(Transform spawnTransform, IWeapon weapon, Action<ICharacter> gameManagerCallback);
+        public bool IsAlive { get; set; }
+        public bool IsGameRunning { get; set; }
+        public Vector2 GetMuzzlePosition();
     }
 }

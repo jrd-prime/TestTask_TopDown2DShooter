@@ -58,8 +58,8 @@ namespace Game.Scripts.Systems.Player
         }
 
         private void SetDirection(Vector2 direction) => _direction = direction;
-        private void SetMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
 
+        private void SetMousePosition(Vector2 mousePosition) => _mousePosition = mousePosition;
 
         public void Dispose() => _disposable?.Dispose();
     }
